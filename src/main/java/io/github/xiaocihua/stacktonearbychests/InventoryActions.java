@@ -3,6 +3,7 @@ package io.github.xiaocihua.stacktonearbychests;
 import io.github.xiaocihua.stacktonearbychests.event.ClickSlotCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.entity.Entity;
