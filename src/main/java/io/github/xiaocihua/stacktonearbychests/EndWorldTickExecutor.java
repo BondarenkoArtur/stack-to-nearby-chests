@@ -2,7 +2,7 @@ package io.github.xiaocihua.stacktonearbychests;
 
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.ingame.ChestScreen;
+import net.minecraft.client.gui.screen.ingame.HandledScreen;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -15,7 +15,7 @@ public class EndWorldTickExecutor {
         ClientTickEvents.END_WORLD_TICK.register(world -> {
             while (tasks.peek() != null) {
                 MinecraftClient client = MinecraftClient.getInstance();
-                if (client.player != null && client.currentScreen instanceof ChestScreen) {
+                if (client.player != null && client.currentScreen instanceof HandledScreen<?>) {
                     client.player.closeHandledScreen();
                 }
                 tasks.poll().run();
