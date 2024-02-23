@@ -96,6 +96,11 @@ public class InventoryActions {
                 .collect(toSet());
 
         moveAll(screenHandler, slots.playerSlots, itemsInContainer);
+
+        MinecraftClient client = MinecraftClient.getInstance();
+        if (client.player != null && client.currentScreen instanceof HandledScreen<?>) {
+            client.player.closeHandledScreen();
+        }
     }
 
     public static void quickStack(ScreenHandler screenHandler, Item item) {
@@ -106,6 +111,10 @@ public class InventoryActions {
 
         if (hasSameTypeItems) {
             moveAll(screenHandler, slots.playerSlots(), Set.of(item));
+        }
+        MinecraftClient client = MinecraftClient.getInstance();
+        if (client.player != null && client.currentScreen instanceof HandledScreen<?>) {
+            client.player.closeHandledScreen();
         }
     }
 
@@ -139,6 +148,10 @@ public class InventoryActions {
                         .findFirst()
                         .ifPresent(containerSlot -> pickup(screenHandler, containerSlot))
                 );
+        MinecraftClient client = MinecraftClient.getInstance();
+        if (client.player != null && client.currentScreen instanceof HandledScreen<?>) {
+            client.player.closeHandledScreen();
+        }
     }
 
     public static void quickMove(ScreenHandler screenHandler, Slot slot) {
