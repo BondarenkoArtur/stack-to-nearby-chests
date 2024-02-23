@@ -24,9 +24,9 @@ public abstract class MinecraftClientMixin {
     @Inject(method = "setScreen(Lnet/minecraft/client/gui/screen/Screen;)V", at = @At("HEAD"), cancellable = true)
     private void onSetScreen(Screen screen, CallbackInfo ci) {
         ActionResult result = SetScreenCallback.EVENT.invoker().update(screen);
-        if (result == ActionResult.FAIL) {
-            ci.cancel();
-        }
+        // if (result == ActionResult.FAIL) {
+        //     ci.cancel();
+        // }
     }
 
     @Inject(method = "tick", at = @At("RETURN"))
