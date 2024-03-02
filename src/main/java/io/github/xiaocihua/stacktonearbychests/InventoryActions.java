@@ -14,6 +14,7 @@ import net.minecraft.registry.Registries;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.world.World;
 import org.lwjgl.glfw.GLFW;
@@ -91,12 +92,19 @@ public class InventoryActions {
     public static void quickStack(ScreenHandler screenHandler) {
         var slots = SlotsInScreenHandler.of(screenHandler);
 
-        Set<Item> itemsInContainer = slots.containerSlots().stream()
-                .map(slot -> slot.getStack().getItem())
-                .filter(item -> !ModOptions.get().behavior.itemsThatWillNotBeStacked.contains(Registries.ITEM.getId(item).toString()))
+        Set<Map.Entry<Text, Item>> namesInContainer = slots.containerSlots().stream()
+                .map(slot -> Map.entry(slot.getStack().getName(), slot.getStack().getItem()))
+                .filter(slot -> !ModOptions.get().behavior.itemsThatWillNotBeStacked.contains(Registries.ITEM.getId(slot.getValue()).toString()))
                 .collect(toSet());
 
-        moveAll(screenHandler, slots.playerSlots, itemsInContainer);
+        slots.playerSlots.stream()
+                .filter(slot -> !(ModOptions.get().behavior.doNotQuickStackItemsFromTheHotbar.booleanValue()
+                        && PlayerInventory.isValidHotbarIndex(slot.getIndex())))
+                .filter(not(InventoryActions::isSlotLocked))
+                .filter(slot -> namesInContainer.contains(Map.entry(slot.getStack().getName(), slot.getStack().getItem())))
+                .filter(slot -> slot.canTakeItems(MinecraftClient.getInstance().player))
+                .filter(Slot::hasStack)
+                .forEach(slot -> quickMove(screenHandler, slot));
 
         MinecraftClient client = MinecraftClient.getInstance();
         if (client.player != null && client.currentScreen instanceof HandledScreen<?>) {
